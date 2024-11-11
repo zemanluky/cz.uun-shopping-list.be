@@ -6,4 +6,4 @@ WORKDIR /app
 
 # watch for changes and run the server
 CMD bun install; \
-    bun --watch run index.ts
+    bun --watch run ./index.ts

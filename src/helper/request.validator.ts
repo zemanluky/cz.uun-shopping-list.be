@@ -39,7 +39,7 @@ export function queryValidator<T extends ZodRawShape>(schema: ZodObject<T>) {
     return (req: Request, res: Response, next: NextFunction) => {
         // try parsing the request query
         try {
-            req.query = schema.parse(req.query);
+            req.parsedQuery = schema.parse(req.query);
             next();
         }
         // catch invalid object or validation errors
