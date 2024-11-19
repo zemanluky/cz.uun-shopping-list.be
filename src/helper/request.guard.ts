@@ -1,15 +1,7 @@
-import {type NextFunction, type Request, type Response} from "express";
-import type {THydratedUserDocument} from "../schema/db/user.schema.ts";
+import {type NextFunction, type Response} from "express";
 import {UnauthenticatedError} from "../error/response/unauthenticated.error.ts";
 import {verify} from "../service/auth.service.ts";
-
-/**
- * Authenticated request.
- * Contains user property which is populated with the user's document based on the JWT access token.
- * When not required, the property is created on the request object, however its value is null.
- */
-export type TAuthReq<P = {},ResBody = {},ReqBody = {},ReqQuery = {},Locals extends Record<string, any> = {}>
-    = Request<P,ResBody,ReqBody,ReqQuery,Locals> & { user?: THydratedUserDocument|null };
+import type {IAppRequest} from "../../types";
 
 /**
  * Extracts JWT token from Bearer auth header.
@@ -30,7 +22,7 @@ function extractToken(headerValue: string): string|null {
  * @param required Whether the user is required to be authenticated.
  */
 export function authenticateRequest(required: boolean = true) {
-    return (req: TAuthReq, res: Response, next: NextFunction) => {
+    return (req: IAppRequest, res: Response, next: NextFunction) => {
         req.user = null;
         const header = req.headers.authorization;
 

@@ -1,11 +1,12 @@
-import express, {type Request, type Response} from "express";
+import express, {type Response} from "express";
 import {bodyValidator} from "../helper/request.validator.ts";
 import {loginBodySchema, type TLoginData} from "../schema/request/auth.schema.ts";
 import {login, logout, refresh} from "../service/auth.service.ts";
 import {emptyResponse, successResponse} from "../helper/response.helper.ts";
 import {UnauthenticatedError} from "../error/response/unauthenticated.error.ts";
-import {authenticateRequest, type TAuthReq} from "../helper/request.guard.ts";
+import {authenticateRequest} from "../helper/request.guard.ts";
 import {publicUserData} from "../utils/user.util.ts";
+import type {IAppRequest} from "../../types";
 
 // Name of the refresh token cookie.
 const APP_AUTH_COOKIE = process.env.APP_AUTH_COOKIE || '__auth';
@@ -19,7 +20,7 @@ export const authController = express.Router();
 authController.post(
     '/login',
     bodyValidator(loginBodySchema),
-    async (req: Request<{},{},TLoginData>, res: Response) => {
+    async (req: IAppRequest<never,never,TLoginData>, res: Response) => {
         const tokenPair = await login(req.body);
 
         // make the refresh token only accessible by the server (not by JS!)
@@ -31,7 +32,7 @@ authController.post(
 /**
  * Refreshes user's JWT auth token based on their refresh token cookie.
  */
-authController.get('/refresh', async (req: Request, res: Response) => {
+authController.get('/refresh', async (req: IAppRequest, res: Response) => {
     // verify the token is set in the cookie
     if (!(APP_AUTH_COOKIE in req.cookies))
         throw new UnauthenticatedError('Authentication token not found.');
@@ -48,7 +49,7 @@ authController.get('/refresh', async (req: Request, res: Response) => {
  * Logs out the currently logged-in user.
  * In other words, it invalidates their refresh token.
  */
-authController.delete('/logout', async (req: Request, res: Response) => {
+authController.delete('/logout', async (req: IAppRequest, res: Response) => {
     if (!(APP_AUTH_COOKIE in req.cookies))
         throw new UnauthenticatedError('Authentication token not found.');
 
@@ -66,7 +67,7 @@ authController.delete('/logout', async (req: Request, res: Response) => {
 authController.get(
     '/identity',
     authenticateRequest(),
-    (req: TAuthReq, res: Response) => {
+    (req: IAppRequest, res: Response) => {
         successResponse(res, publicUserData(req.user!));
     }
 );

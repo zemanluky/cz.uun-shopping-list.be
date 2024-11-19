@@ -5,16 +5,13 @@ import {
     type TRegisterUserData, type TRegistrationAvailabilityQuery, type TUpdateUserData, type TUserListQuery,
     type TUserDetailParams, updateUserSchema, userListQuerySchema, type TUserDetailQuery, getUserQuerySchema
 } from "../schema/request/user.schema.ts";
-import {authenticateRequest, type TAuthReq} from "../helper/request.guard.ts";
+import {authenticateRequest} from "../helper/request.guard.ts";
 import {
-    checkIdentifierAvailability,
-    createUser,
-    getUserDetailById,
-    getUserDetailByUsername,
-    updateUser
+    checkIdentifierAvailability, createUser, getUserDetailById, getUserDetailByUsername, updateUser
 } from "../service/user.service.ts";
 import {emptyResponse, successResponse} from "../helper/response.helper.ts";
 import {publicUserData} from "../utils/user.util.ts";
+import type {IAppRequest} from "../../types";
 
 export const userController = express.Router();
 
@@ -25,7 +22,7 @@ export const userController = express.Router();
 userController.get(
     '/',
     authenticateRequest(), queryValidator(userListQuerySchema),
-    async (req: TAuthReq<{},{},{},TUserListQuery>, res: Response) => {
+    async (req: IAppRequest<never,TUserListQuery>, res: Response) => {
 
     }
 );
@@ -36,14 +33,14 @@ userController.get(
 userController.get(
     '/:id',
     authenticateRequest(), paramValidator(getUserParamSchema), queryValidator(getUserQuerySchema),
-    async (req: TAuthReq<TUserDetailParams,{},{},TUserDetailQuery>, res: Response) => {
+    async (req: IAppRequest<TUserDetailParams,TUserDetailQuery>, res: Response) => {
         // we want to get user by their username
-        if (req.query.filter_type === 'username') {
-            const user = await getUserDetailByUsername(req.params.id);
+        if (req.parsedQuery!.filter_type === 'username') {
+            const user = await getUserDetailByUsername(req.parsedParams!.id);
             return successResponse(res, publicUserData(user));
         }
 
-        const user = await getUserDetailById(req.params.id);
+        const user = await getUserDetailById(req.parsedParams!.id);
         successResponse(res, publicUserData(user));
     }
 )
@@ -54,7 +51,7 @@ userController.get(
 userController.post(
     '/registration',
     bodyValidator(registerUserBodySchema),
-    async (req: Request<{},{},TRegisterUserData>, res: Response) => {
+    async (req: IAppRequest<never,never,TRegisterUserData>, res: Response) => {
         // create the user
         await createUser(req.body);
         emptyResponse(res);
@@ -67,7 +64,7 @@ userController.post(
 userController.get(
     '/registration/availability',
     queryValidator(getRegistrationAvailabilityQuerySchema),
-    async (req: Request<{},{},{},TRegistrationAvailabilityQuery>, res: Response) => {
+    async (req: IAppRequest<never,TRegistrationAvailabilityQuery>, res: Response) => {
         const availabilities = await checkIdentifierAvailability(req.query);
         successResponse(res, availabilities);
     }
@@ -79,7 +76,7 @@ userController.get(
 userController.put(
     '/profile',
     authenticateRequest(), bodyValidator(updateUserSchema),
-    async (req: TAuthReq<{},{},TUpdateUserData>, res: Response) => {
+    async (req: IAppRequest<never,never,TUpdateUserData>, res: Response) => {
         // update user own data (use authenticated user's id) and return their updated data
         const updatedUser = await updateUser(req.body, req.user!._id.toString());
         successResponse(res, publicUserData(updatedUser));

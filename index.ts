@@ -4,16 +4,6 @@ import {errorHandler} from "./src/helper/error.handler.ts";
 import {connectToMongo} from "./src/helper/mongo.connector.ts";
 import {authController} from "./src/controller/auth.controller.ts";
 import {userController} from "./src/controller/user.controller.ts";
-import {type ParsedQs} from "qs";
-import type {ParamsDictionary} from "express-serve-static-core";
-
-declare global {
-    namespace Express {
-        export interface Request<P = ParamsDictionary, ResBody = any, ReqBody = any, ReqQuery = ParsedQs, LocalsObj extends Record<string, any> = Record<string, any>> {
-            parsedQuery?: ReqQuery
-        }
-    }
-}
 
 // initialize connection to MongoDB
 await connectToMongo();

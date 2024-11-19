@@ -1,18 +1,19 @@
 import type {Response} from "express";
 import {StatusCodes} from "http-status-codes";
 import type {ZodIssue} from "zod";
+import type {IPaginatedParameters} from "../../types";
 
-type BaseResponse = {
+type TBaseResponse = {
     status: StatusCodes,
     success: boolean
 };
 
-type SuccessResponse<TData> = BaseResponse & {
+type TSuccessResponse<TData> = TBaseResponse & {
     success: true
     data: TData
 };
 
-type ErrorResponse = BaseResponse & {
+type TErrorResponse = TBaseResponse & {
     success: false,
     error: {
         message: string,
@@ -21,8 +22,15 @@ type ErrorResponse = BaseResponse & {
     }
 };
 
-type ValidationResponse = ErrorResponse & {
+type TValidationResponse = TErrorResponse & {
     validation: ZodIssue[]
+}
+
+type TPaginatedResponse<TData> = TBaseResponse & {
+    success: true,
+    data: IPaginatedParameters & {
+        items: Array<TData>
+    }
 }
 
 /**
@@ -32,13 +40,35 @@ type ValidationResponse = ErrorResponse & {
  * @param statusCode The HTTP status code to send. Generally, you would want to use status codes from the 200 range.
  */
 export const successResponse = <TData extends any>(res: Response, data: TData, statusCode: StatusCodes = StatusCodes.OK): void => {
-    const response: SuccessResponse<TData> = {
+    const response: TSuccessResponse<TData> = {
         status: statusCode,
         success: true,
         data: data
     };
 
     // send the response as json
+    res.status(statusCode).json(response);
+}
+
+/**
+ * Sends a success response with paginated data.
+ * @param res The response object.
+ * @param data The array of data to send in the response.
+ * @param paginationParameters The parameters of the paginated response.
+ * @param statusCode The HTTP status code to send. Generally, you would want to use status codes from the 200 range.
+ */
+export const paginatedResponse = <TData extends any>(
+    res: Response, data: Array<TData>, paginationParameters: IPaginatedParameters, statusCode: StatusCodes = StatusCodes.OK
+): void => {
+    const response: TPaginatedResponse<TData> = {
+        status: statusCode,
+        success: true,
+        data: {
+            ...paginationParameters,
+            items: data
+        }
+    };
+
     res.status(statusCode).json(response);
 }
 
@@ -63,7 +93,7 @@ export const errorResponse = (
     res: Response, message: string, statusCode: StatusCodes = StatusCodes.INTERNAL_SERVER_ERROR,
     code: string, trace: string|null = null
 ): void => {
-    const response: ErrorResponse = {
+    const response: TErrorResponse = {
         status: statusCode,
         success: false,
         error: {message, code, trace}
@@ -80,7 +110,7 @@ export const errorResponse = (
  * @param validationErrors The validation errors from class-validator.
  */
 export const validationResponse = (res: Response, validationErrors: ZodIssue[]): void => {
-    const response: ValidationResponse = {
+    const response: TValidationResponse = {
         status: StatusCodes.UNPROCESSABLE_ENTITY,
         success: false,
         error: {
