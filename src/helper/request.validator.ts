@@ -1,5 +1,5 @@
 import type {Request, Response} from "express";
-import {z, type ZodRawShape} from "zod";
+import {z, type ZodRawShape, ZodSchema, ZodType, type ZodTypeAny} from "zod";
 import {ZodError, ZodObject} from "zod";
 import type {NextFunction} from "express";
 import {ValidationError} from "../error/response/validation.error.ts";
@@ -11,7 +11,7 @@ import type {IAppRequest} from "../../types";
  *
  * @param schema The schema to use for validation.
  */
-export function bodyValidator<T extends ZodRawShape>(schema: ZodObject<T>) {
+export function bodyValidator<T extends ZodTypeAny>(schema: T) {
     return (req: IAppRequest, res: Response, next: NextFunction) => {
         // try parsing the request body
         try {
@@ -36,7 +36,7 @@ export function bodyValidator<T extends ZodRawShape>(schema: ZodObject<T>) {
  *
  * @param schema
  */
-export function queryValidator<T extends ZodRawShape>(schema: ZodObject<T>) {
+export function queryValidator<T extends ZodTypeAny>(schema: T) {
     return (req: IAppRequest<never,ReturnType<typeof schema.parse>>, res: Response, next: NextFunction) => {
         // try parsing the request query
         try {
@@ -61,7 +61,7 @@ export function queryValidator<T extends ZodRawShape>(schema: ZodObject<T>) {
  *
  * @param schema
  */
-export function paramValidator<T extends ZodRawShape>(schema: ZodObject<T>) {
+export function paramValidator<T extends ZodTypeAny>(schema: T) {
     return (req: IAppRequest<ReturnType<typeof schema.parse>>, res: Response, next: NextFunction) => {
         // try parsing the request parameters
         try {
