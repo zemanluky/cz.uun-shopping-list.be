@@ -39,9 +39,12 @@ export function authenticateRequest(required: boolean = true) {
         if (!token)
             return next(new UnauthenticatedError('Invalid authorization header.'));
 
-        verify(token).then(user => {
-            req.user = user;
-            next();
-        });
+        verify(token)
+            .then(user => {
+                req.user = user;
+                next();
+            })
+            .catch(error => next(error))
+        ;
     };
 }

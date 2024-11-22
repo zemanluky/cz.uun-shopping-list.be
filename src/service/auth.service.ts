@@ -107,25 +107,33 @@ export async function login(request: TLoginData): Promise<TTokenPair> {
  * @param refreshToken The refresh token.
  */
 export async function refresh(refreshToken: string): Promise<TTokenPair> {
-    const result = verifyJwt(refreshToken);
+    try {
+        const result = verifyJwt(refreshToken);
 
-    // the refresh token does not have its ID set, someone is probably trying to use the access token instead...
-    if (!result.jti)
-        throw new UnauthenticatedError('The refresh token is not valid. Please, login again.', 'session_expired');
+        // the refresh token does not have its ID set, someone is probably trying to use the access token instead...
+        if (!result.jti)
+            throw new UnauthenticatedError('The refresh token is not valid. Please, login again.', 'session_expired');
 
-    // let's verify the user actually exists
-    const user = await User.findById(result.userId).exec();
+        // let's verify the user actually exists
+        const user = await User.findById(result.userId).exec();
 
-    if (!user)
-        throw new UnauthenticatedError('The user authenticated via the token was not found in the system.');
+        if (!user)
+            throw new UnauthenticatedError('The user authenticated via the token was not found in the system.');
 
-    // verify that the token with the given jti exists and that it is still valid (not revoked)
-    const token = user.refresh_tokens.find(rt => rt.jti === result.jti);
+        // verify that the token with the given jti exists and that it is still valid (not revoked)
+        const token = user.refresh_tokens.find(rt => rt.jti === result.jti);
 
-    if (!token || token.revoked_at !== null || isAfter(new Date(), token.valid_until))
-        throw new UnauthenticatedError('The authentication session has expired. Please, log in again.', 'session_expired');
+        if (!token || token.revoked_at !== null || isAfter(new Date(), token.valid_until))
+            throw new UnauthenticatedError('The authentication session has expired. Please, log in again.', 'session_expired');
 
-    return { access: createAccessToken(user), refresh: await createRefreshToken(user, result.jti) };
+        return { access: createAccessToken(user), refresh: await createRefreshToken(user, result.jti) };
+    }
+    catch (error: any) {
+        if (error instanceof InvalidJwt)
+            throw new UnauthenticatedError('The session has expired or the token is not valid. Please, log in again.', 'session_expired');
+
+        throw error;
+    }
 }
 
 /**
@@ -134,13 +142,21 @@ export async function refresh(refreshToken: string): Promise<TTokenPair> {
  * @return The user document.
  */
 export async function verify(accessToken: string): Promise<THydratedUserDocument> {
-    const result = verifyJwt(accessToken);
-    const user = await User.findById(result.userId).exec();
+    try {
+        const result = verifyJwt(accessToken);
+        const user = await User.findById(result.userId).exec();
 
-    if (!user)
-        throw new UnauthenticatedError('The user authenticated via the token was not found in the system.');
+        if (!user)
+            throw new UnauthenticatedError('The user authenticated via the token was not found in the system.');
 
-    return user;
+        return user;
+    }
+    catch (error: any) {
+        if (error instanceof InvalidJwt)
+            throw new UnauthenticatedError('The access token is not valid. Please, refresh your authentication.');
+
+        throw error;
+    }
 }
 
 /**
