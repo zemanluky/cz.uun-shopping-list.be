@@ -1,4 +1,4 @@
-import express, {type Request, type Response} from "express";
+import express, {type Response} from "express";
 import {bodyValidator, paramValidator, queryValidator} from "../helper/request.validator.ts";
 import {
     getRegistrationAvailabilityQuerySchema, getUserParamSchema, registerUserBodySchema,
@@ -7,9 +7,9 @@ import {
 } from "../schema/request/user.schema.ts";
 import {authenticateRequest} from "../helper/request.guard.ts";
 import {
-    checkIdentifierAvailability, createUser, getUserDetailById, getUserDetailByUsername, updateUser
+    checkIdentifierAvailability, createUser, getUserDetailById, getUserDetailByUsername, getUserList, updateUser
 } from "../service/user.service.ts";
-import {emptyResponse, successResponse} from "../helper/response.helper.ts";
+import {emptyResponse, paginatedResponse, successResponse} from "../helper/response.helper.ts";
 import {publicUserData} from "../utils/user.util.ts";
 import type {IAppRequest} from "../../types";
 
@@ -20,10 +20,12 @@ export const userController = express.Router();
  * It also allows to search the users by a given query.
  */
 userController.get(
-    '/',
-    authenticateRequest(), queryValidator(userListQuerySchema),
+    '/', authenticateRequest(), queryValidator(userListQuerySchema),
     async (req: IAppRequest<never,TUserListQuery>, res: Response) => {
+        const { users, paginatedParams } = await getUserList(req.parsedQuery);
+        const publicUsers = users.map(u => publicUserData(u));
 
+        paginatedResponse(res, publicUsers, paginatedParams);
     }
 );
 

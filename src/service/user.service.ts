@@ -1,12 +1,58 @@
 import type {
-    TRegisterUserData,
-    TRegistrationAvailabilityQuery,
-    TUpdateUserData
+    TRegisterUserData, TRegistrationAvailabilityQuery, TUpdateUserData, TUserListQuery
 } from "../schema/request/user.schema.ts";
-import {type THydratedUserDocument, User} from "../schema/db/user.schema.ts";
+import {type IUser, type THydratedUserDocument, User} from "../schema/db/user.schema.ts";
 import {NotFoundError} from "../error/response/not-found.error.ts";
 import {BadRequestError} from "../error/response/bad-request.error.ts";
-import {mongo, Types} from "mongoose";
+import {mongo} from "mongoose";
+import type {IPaginatedParameters} from "../../types";
+import {validatePaginationParameters} from "../utils/pagination.utils.ts";
+
+type TUserListResult = { users: Array<THydratedUserDocument>, paginatedParams: IPaginatedParameters };
+
+/**
+ * Gets a paginated list of users in the application.
+ * @filter The filter used for the query. If not provided, default page size will be used.
+ */
+export async function getUserList(filter?: TUserListQuery): Promise<TUserListResult> {
+    // create default values
+    if (!filter) filter = { page: 1, pageSize: 25 };
+
+    const { page, pageSize, search, searchByUsername } = filter;
+    const baseQuery = User.find();
+
+    // we are searching by username only, therefore we want to use search usernames beginning with the provided query
+    if (searchByUsername !== undefined) {
+        const regex = new RegExp(`^${searchByUsername}`, 'i');
+        baseQuery.find({ username: regex });
+    }
+    // we have a general search query, we want to search by name, surname and username - and anywhere in the string
+    else if (search !== undefined) {
+        const regex = new RegExp(`${search}`, 'i');
+        baseQuery.find({ $or: [{ name: regex }, { surname: regex }, { username: regex }]});
+    }
+
+    const { validatedPageSize, validatedPage, skipDocuments } = validatePaginationParameters(page, pageSize);
+
+    const queryResults = await baseQuery
+        .collation({ locale: 'en', strength: 1 })
+        .limit(validatedPageSize)
+        .skip(skipDocuments)
+        .exec();
+
+    return {
+        users: queryResults,
+        paginatedParams: {
+            total: await User.collection.countDocuments(),
+            filtered: queryResults.length,
+            pageSize: validatedPageSize,
+            maxPage: queryResults.length > 0
+                ? Math.ceil(queryResults.length / validatedPageSize)
+                : 1,
+            page: validatedPage
+        }
+    };
+}
 
 /**
  * Gets detail of a given user based on the provided ID.

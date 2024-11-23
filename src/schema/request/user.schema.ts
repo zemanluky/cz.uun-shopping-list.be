@@ -1,4 +1,5 @@
 import {z} from "zod";
+import {paginatedQuerySchema} from "./paginated.schema.ts";
 
 const usernameValidator = z.string()
     .toLowerCase()
@@ -6,7 +7,18 @@ const usernameValidator = z.string()
     .min(5)
     .regex(/^[a-z_-]+$/gm);
 
-export const userListQuerySchema = z.object({ search: z.string().optional() });
+const userListSearchSchema = z.object({
+    search: z.string().optional(),
+    searchByUsername: z.string().optional()
+});
+
+export const userListQuerySchema = paginatedQuerySchema()
+    .merge(userListSearchSchema)
+    .refine(
+        ({search, searchByUsername}) => search === undefined || searchByUsername === undefined,
+        'Only search or search by username may be provided.'
+    );
+;
 export type TUserListQuery = z.infer<typeof userListQuerySchema>;
 
 export const getUserParamSchema = z.object({ id: z.string() });

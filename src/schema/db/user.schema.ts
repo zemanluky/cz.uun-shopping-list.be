@@ -37,7 +37,7 @@ const userSchema = new Schema<IUser, TUserModel, IUserMethods>({
 });
 userSchema.method('fullName', function fullName() {
     return `${this.name} ${this.surname}`;
-})
+});
 
 export const User = model<IUser, TUserModel>('User', userSchema);
 export type TUser = InferRawDocType<typeof userSchema>;
