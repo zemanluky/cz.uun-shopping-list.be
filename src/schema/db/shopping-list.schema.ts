@@ -10,6 +10,7 @@ export interface IShoppingList {
     members: Array<Types.ObjectId>;
     created_at: Date;
     updated_at: Date;
+    complete_by: Date;
     closed_at: Date|null;
 }
 
@@ -24,6 +25,7 @@ const shoppingListSchema = new Schema<IShoppingList, TShoppingListModel>({
     members: { type: [{type: Schema.Types.ObjectId, ref: 'User'}], default: [], required: true },
     created_at: { type: Date, required: true, default: Date.now },
     updated_at: { type: Date, required: true, default: Date.now },
+    complete_by: { type: Date, required: true },
     closed_at: { type: Date, required: false, default: null }
 });
 

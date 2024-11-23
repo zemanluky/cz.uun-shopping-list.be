@@ -2,6 +2,12 @@ import express, {type Response} from "express";
 import {authenticateRequest} from "../helper/request.guard.ts";
 import {bodyValidator, paramValidator, queryValidator} from "../helper/request.validator.ts";
 import type {IAppRequest} from "../../types";
+import {
+    shoppingListBodySchema,
+    shoppingListDetailParamSchema,
+    shoppingListListQuerySchema, type TShoppingListBody, type TShoppingListDetailParams,
+    type TShoppingListListQuery, type TUpdateShoppingListBody, updateShoppingListBodySchema
+} from "../schema/request/shopping-list.schema.ts";
 
 export const shoppingListController = express.Router();
 
@@ -10,8 +16,8 @@ export const shoppingListController = express.Router();
  * Allows for filtering.
  */
 shoppingListController.get(
-    '/', queryValidator(),
-    async (req: IAppRequest, res: Response) => {
+    '/', queryValidator(shoppingListListQuerySchema),
+    async (req: IAppRequest<never,TShoppingListListQuery>, res: Response) => {
 
     }
 );
@@ -20,8 +26,8 @@ shoppingListController.get(
  * Gets a detail of a given shopping list.
  */
 shoppingListController.get(
-    '/:id', paramValidator(),
-    async (req: IAppRequest, res: Response) => {
+    '/:id', paramValidator(shoppingListDetailParamSchema),
+    async (req: IAppRequest<TShoppingListDetailParams>, res: Response) => {
 
     }
 );
@@ -30,8 +36,8 @@ shoppingListController.get(
  * Creates a new shopping list.
  */
 shoppingListController.post(
-    '/', bodyValidator(),
-    async (req: IAppRequest, res: Response) => {
+    '/', bodyValidator(shoppingListBodySchema),
+    async (req: IAppRequest<never,never,TShoppingListBody>, res: Response) => {
 
     }
 );
@@ -40,8 +46,8 @@ shoppingListController.post(
  * Updates a shopping list.
  */
 shoppingListController.put(
-    '/:id', paramValidator(), bodyValidator(),
-    async (req: IAppRequest, res: Response) => {
+    '/:id', paramValidator(shoppingListDetailParamSchema), bodyValidator(updateShoppingListBodySchema),
+    async (req: IAppRequest<TShoppingListDetailParams,never,TUpdateShoppingListBody>, res: Response) => {
 
     }
 );
@@ -50,8 +56,8 @@ shoppingListController.put(
  * Deletes a shopping list.
  */
 shoppingListController.delete(
-    '/:id', paramValidator(),
-    async (req: IAppRequest, res: Response) => {
+    '/:id', paramValidator(shoppingListDetailParamSchema),
+    async (req: IAppRequest<TShoppingListDetailParams>, res: Response) => {
 
     }
 );
@@ -60,8 +66,8 @@ shoppingListController.delete(
  * Marks the shopping list as completed.
  */
 shoppingListController.patch(
-    '/:id/completed-status', paramValidator(),
-    async (req: IAppRequest, res: Response) => {
+    '/:id/completed-status', paramValidator(shoppingListDetailParamSchema),
+    async (req: IAppRequest<TShoppingListDetailParams>, res: Response) => {
 
     }
 );
