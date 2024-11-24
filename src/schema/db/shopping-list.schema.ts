@@ -18,9 +18,9 @@ export type THydratedShoppingListDocument = HydratedDocument<IShoppingList & { i
 type TShoppingListModel = Model<IShoppingList,{},{},{},THydratedShoppingListDocument>
 
 const shoppingListSchema = new Schema<IShoppingList, TShoppingListModel>({
-    name: { type: String, required: true },
+    name: { type: String, required: true, index: "text" },
     photo_upload_path: { type: String, required: false, default: null },
-    author: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
+    author: { type: Schema.Types.ObjectId, required: true, ref: 'User', index: true },
     items: { type: [shoppingListItemSchema], required: true, default: [] },
     members: { type: [{type: Schema.Types.ObjectId, ref: 'User'}], default: [], required: true },
     created_at: { type: Date, required: true, default: Date.now },
@@ -28,6 +28,7 @@ const shoppingListSchema = new Schema<IShoppingList, TShoppingListModel>({
     complete_by: { type: Date, required: true },
     closed_at: { type: Date, required: false, default: null }
 });
+shoppingListSchema.index({ created_at: 1, complete_by: 1 });
 
 export const ShoppingList = model<IShoppingList, TShoppingListModel>('ShoppingList', shoppingListSchema);
 export type TShoppingList = InferRawDocType<typeof shoppingListSchema>;
