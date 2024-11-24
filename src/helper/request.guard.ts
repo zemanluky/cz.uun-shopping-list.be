@@ -2,6 +2,8 @@ import {type NextFunction, type Response} from "express";
 import {UnauthenticatedError} from "../error/response/unauthenticated.error.ts";
 import {verify} from "../service/auth.service.ts";
 import type {IAppRequest} from "../../types";
+import type {EUserRole} from "../schema/db/user.schema.ts";
+import {PermissionError} from "../error/response/permission.error.ts";
 
 /**
  * Extracts JWT token from Bearer auth header.
@@ -47,4 +49,23 @@ export function authenticateRequest(required: boolean = true) {
             .catch(error => next(error))
         ;
     };
+}
+
+/**
+ * Authorizes the request based on the user's role.
+ *
+ * Should be used AFTER the `authenticateRequest` middleware.
+ *
+ * If the request is passed through `authenticateRequest` middleware even though the user is not authenticated,
+ * this middleware will skip checking the user's role.
+ *
+ * @param allowedRoles The roles that are allowed on a given endpoint.
+ */
+export function authorizeRequest(allowedRoles: Array<EUserRole>) {
+    return (req: IAppRequest, res: Response, next: NextFunction) => {
+        if (!req.user) return next();
+        if (allowedRoles.includes(req.user.role)) return next();
+
+        next(new PermissionError('You do not have permission to access this resource.', 'resource'));
+    }
 }
