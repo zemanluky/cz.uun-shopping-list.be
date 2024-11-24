@@ -4,8 +4,9 @@ import {bodyValidator, paramValidator, queryValidator} from "../helper/request.v
 import type {IAppRequest} from "../../types";
 import {shoppingListDetailParamSchema, type TShoppingListDetailParams} from "../schema/request/shopping-list.schema.ts";
 import {
+    saveMemberPermissionBodySchema,
     saveMembersBodySchema,
-    shoppingListMemberParamSchema, type TSaveMembersBody,
+    shoppingListMemberParamSchema, type TSaveMemberPermissionBody, type TSaveMembersBody,
     type TShoppingListMemberParams
 } from "../schema/request/shopping-list-member.schema.ts";
 import {successResponse} from "../helper/response.helper.ts";
@@ -27,8 +28,8 @@ shoppingListMemberController.post(
  * Modifies member's permission in the shopping list.
  */
 shoppingListMemberController.patch(
-    '/:memberId/permission', paramValidator(shoppingListMemberParamSchema), bodyValidator(saveMembersBodySchema),
-    async (req: IAppRequest<TShoppingListMemberParams,never,TSaveMembersBody>, res: Response) => {
+    '/:memberId/permission', paramValidator(shoppingListMemberParamSchema), bodyValidator(saveMemberPermissionBodySchema),
+    async (req: IAppRequest<TShoppingListMemberParams,never,TSaveMemberPermissionBody>, res: Response) => {
         successResponse(res, { params: req.parsedParams, body: req.body });
     }
 );

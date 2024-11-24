@@ -8,11 +8,19 @@ export const shoppingListMemberParamSchema = shoppingListDetailParamSchema.exten
 });
 export type TShoppingListMemberParams = z.infer<typeof shoppingListMemberParamSchema>;
 
+const permissionValidator = z.string().trim().toLowerCase().pipe(z.nativeEnum(EShoppingListMemberPermission));
+
 // schema for adding or editing list members
 export const saveMembersBodySchema = z.object({
     members: z.array(z.object({
         user: z.string().trim().min(1),
-        permission: z.string().trim().toLowerCase().pipe(z.nativeEnum(EShoppingListMemberPermission))
+        permission: permissionValidator
     })).min(1),
 });
 export type TSaveMembersBody = z.infer<typeof saveMembersBodySchema>;
+
+// schema for editing member's permission
+export const saveMemberPermissionBodySchema = z.object({
+    permission: permissionValidator
+});
+export type TSaveMemberPermissionBody = z.infer<typeof saveMemberPermissionBodySchema>;
