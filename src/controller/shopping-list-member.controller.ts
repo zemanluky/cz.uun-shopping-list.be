@@ -9,6 +9,7 @@ import {
     type TShoppingListItemParams
 } from "../schema/request/shopping-list-item.schema.ts";
 import {shoppingListDetailParamSchema, type TShoppingListDetailParams} from "../schema/request/shopping-list.schema.ts";
+import {successResponse} from "../helper/response.helper.ts";
 
 // should be mounted already on a route containing the id parameter of the shopping list - we have to merge the parameters
 export const shoppingListMemberController = express.Router({ mergeParams: true });
@@ -19,7 +20,7 @@ export const shoppingListMemberController = express.Router({ mergeParams: true }
 shoppingListMemberController.post(
     '/', paramValidator(shoppingListDetailParamSchema), bodyValidator(saveItemBodySchema),
     async (req: IAppRequest<TShoppingListDetailParams,never,TSaveItemBody>, res: Response) => {
-
+        successResponse(res, { params: req.parsedParams, body: req.body });
     }
 );
 
@@ -29,7 +30,7 @@ shoppingListMemberController.post(
 shoppingListMemberController.put(
     '/:itemId', paramValidator(shoppingListItemParamSchema), bodyValidator(saveItemBodySchema),
     async (req: IAppRequest<TShoppingListItemParams,never,TSaveItemBody>, res: Response) => {
-
+        successResponse(res, { params: req.parsedParams, body: req.body });
     }
 );
 
@@ -39,7 +40,7 @@ shoppingListMemberController.put(
 shoppingListMemberController.delete(
     '/:itemId', paramValidator(shoppingListItemParamSchema),
     async (req: IAppRequest<TShoppingListItemParams>, res: Response) => {
-
+        successResponse(res, { params: req.parsedParams });
     }
 );
 
@@ -49,6 +50,6 @@ shoppingListMemberController.delete(
 shoppingListMemberController.patch(
     '/:itemId/completed-status', paramValidator(shoppingListItemParamSchema), bodyValidator(markItemBoughtBodySchema),
     async (req: IAppRequest<TShoppingListItemParams,never,TMarkItemBoughtBody>, res: Response) => {
-
+        successResponse(res, { params: req.parsedParams, body: req.body });
     }
 );

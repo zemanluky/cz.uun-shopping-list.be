@@ -8,6 +8,7 @@ import {
     shoppingListMemberParamSchema, type TSaveMembersBody,
     type TShoppingListMemberParams
 } from "../schema/request/shopping-list-member.schema.ts";
+import {successResponse} from "../helper/response.helper.ts";
 
 // should be mounted already on a route containing the id parameter of the shopping list - we have to merge the parameters
 export const shoppingListItemController = express.Router({ mergeParams: true });
@@ -18,7 +19,7 @@ export const shoppingListItemController = express.Router({ mergeParams: true });
 shoppingListItemController.post(
     '/', paramValidator(shoppingListDetailParamSchema), bodyValidator(saveMembersBodySchema),
     async (req: IAppRequest<TShoppingListDetailParams,never,TSaveMembersBody>, res: Response) => {
-
+        successResponse(res, { params: req.parsedParams, body: req.body });
     }
 );
 
@@ -28,7 +29,7 @@ shoppingListItemController.post(
 shoppingListItemController.patch(
     '/:memberId/permission', paramValidator(shoppingListMemberParamSchema), bodyValidator(saveMembersBodySchema),
     async (req: IAppRequest<TShoppingListMemberParams,never,TSaveMembersBody>, res: Response) => {
-
+        successResponse(res, { params: req.parsedParams, body: req.body });
     }
 );
 
@@ -38,6 +39,6 @@ shoppingListItemController.patch(
 shoppingListItemController.delete(
     '/:memberId', paramValidator(shoppingListMemberParamSchema),
     async (req: IAppRequest<TShoppingListMemberParams>, res: Response) => {
-
+        successResponse(res, { params: req.parsedParams });
     }
 );
