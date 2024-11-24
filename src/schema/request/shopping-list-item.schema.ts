@@ -17,6 +17,6 @@ export type TSaveItemBody = z.infer<typeof saveItemBodySchema>;
 
 // schema for marking item as bought
 export const markItemBoughtBodySchema = z.object({
-    bought: z.preprocess(coerceBoolean, z.boolean())
+    bought: z.boolean()
 });
 export type TMarkItemBoughtBody = z.infer<typeof markItemBoughtBodySchema>;
