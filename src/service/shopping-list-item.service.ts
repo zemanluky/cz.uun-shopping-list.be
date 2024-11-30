@@ -24,6 +24,9 @@ export async function createItem(shoppingListId: Types.ObjectId, data: TSaveItem
     if (access !== EShoppingListAccess.ReadWrite && access !== EShoppingListAccess.ReadAddItems)
         throw new PermissionError('You do not have access to add items to this shopping list.', 'shopping_list.item:add');
 
+    if (shoppingList.closed_at !== null)
+        throw new BadRequestError('Cannot add items to a list that has been closed.', 'shopping_list.item:closed_list');
+
     shoppingList.items.push(data);
     return await shoppingList.save();
 }
@@ -49,6 +52,9 @@ export async function updateItem(
         throw new PermissionError('You do not have access to edit items in this shopping list.', 'shopping_list.item:edit');
 
     const itemIndex = shoppingList.items.findIndex(item => item._id.equals(itemId));
+
+    if (shoppingList.closed_at !== null)
+        throw new BadRequestError('Cannot edit items in a list that has been closed.', 'shopping_list.item:closed_list');
 
     if (itemIndex === -1)
         throw new NotFoundError(`Could not find the shopping list item with id '${itemId}' to update.`, 'shopping_list.item');
@@ -85,6 +91,9 @@ export async function deleteItem(
     if (access !== EShoppingListAccess.ReadWrite && access !== EShoppingListAccess.ReadAddItems)
         throw new PermissionError('You do not have access to delete this resource.', 'shopping_list.item:delete');
 
+    if (shoppingList.closed_at !== null)
+        throw new BadRequestError('Cannot remove items in a list that has been closed.', 'shopping_list.item:closed_list');
+
     const itemIndex = shoppingList.items.findIndex(item => item._id.equals(itemId));
 
     if (itemIndex === -1)
@@ -116,6 +125,9 @@ export async function changeItemCompletionStatus(
 
     if (access === EShoppingListAccess.None)
         throw new PermissionError('You do not have access to update this resource.', 'shopping_list.item:change_status');
+
+    if (shoppingList.closed_at !== null)
+        throw new BadRequestError('Cannot edit items in a list that has been closed.', 'shopping_list.item:closed_list');
 
     const itemIndex = shoppingList.items.findIndex(item => item._id.equals(itemId));
 
