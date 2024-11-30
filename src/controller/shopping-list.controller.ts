@@ -1,17 +1,21 @@
 import express, {type Response} from "express";
-import {authenticateRequest} from "../helper/request.guard.ts";
 import {bodyValidator, paramValidator, queryValidator} from "../helper/request.validator.ts";
 import type {IAppRequest} from "../../types";
 import {
     shoppingListBodySchema,
     shoppingListDetailParamSchema,
-    shoppingListListQuerySchema, type TShoppingListBody, type TShoppingListDetailParams,
-    type TShoppingListListQuery, type TUpdateShoppingListBody, updateShoppingListBodySchema
+    shoppingListListQuerySchema,
+    type TShoppingListBody,
+    type TShoppingListDetailParams,
+    type TShoppingListListQuery,
+    type TUpdateShoppingListBody,
+    updateShoppingListBodySchema
 } from "../schema/request/shopping-list.schema.ts";
 import {emptyResponse, paginatedResponse, successResponse} from "../helper/response.helper.ts";
 import {
     closeShoppingList,
-    createShoppingList, deleteShoppingList,
+    createShoppingList,
+    deleteShoppingList,
     getShoppingListDetail,
     listShoppingLists,
     updateShoppingList
@@ -19,8 +23,11 @@ import {
 import {
     checkAccessToShoppingList,
     EShoppingListAccess,
-    exportShoppingListDetail, exportShoppingListItemStatistics, exportShoppingListOverview
+    exportShoppingListDetail,
+    exportShoppingListItemStatistics,
+    exportShoppingListOverview
 } from "../utils/shopping-list.utils.ts";
+import {StatusCodes} from "http-status-codes";
 
 export const shoppingListController = express.Router();
 
@@ -75,7 +82,7 @@ shoppingListController.post(
             ...exportShoppingListItemStatistics(shoppingList),
         }
 
-        successResponse(res, data);
+        successResponse(res, data, StatusCodes.CREATED);
     }
 );
 
