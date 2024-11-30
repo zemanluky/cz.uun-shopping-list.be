@@ -139,6 +139,9 @@ export async function updateShoppingList(id: Types.ObjectId, data: TUpdateShoppi
     if (access !== EShoppingListAccess.ReadWrite)
         throw new PermissionError('You do not have access to edit this resource.', 'shopping_list:write');
 
+    if (shoppingList.closed_at !== null)
+        throw new BadRequestError('Cannot update a closed shopping list.', 'shopping_list:edit_closed_list');
+
     const {name, complete_by} = data;
 
     shoppingList.name = name;
