@@ -1,15 +1,23 @@
 import express, {type Response} from "express";
-import {authenticateRequest} from "../helper/request.guard.ts";
-import {bodyValidator, paramValidator, queryValidator} from "../helper/request.validator.ts";
+import {bodyValidator, paramValidator} from "../helper/request.validator.ts";
 import type {IAppRequest} from "../../types";
 import {shoppingListDetailParamSchema, type TShoppingListDetailParams} from "../schema/request/shopping-list.schema.ts";
 import {
     saveMemberPermissionBodySchema,
     saveMembersBodySchema,
-    shoppingListMemberParamSchema, type TSaveMemberPermissionBody, type TSaveMembersBody,
+    shoppingListMemberParamSchema,
+    type TSaveMemberPermissionBody,
+    type TSaveMembersBody,
     type TShoppingListMemberParams
 } from "../schema/request/shopping-list-member.schema.ts";
 import {successResponse} from "../helper/response.helper.ts";
+import {exportShoppingListMembers} from "../utils/shopping-list.utils.ts";
+import {StatusCodes} from "http-status-codes";
+import {
+    addShoppingListMember,
+    modifyListMembersPermission,
+    removeShoppingListMember
+} from "../service/shopping-list-member.service.ts";
 
 // should be mounted already on a route containing the id parameter of the shopping list - we have to merge the parameters
 export const shoppingListMemberController = express.Router({ mergeParams: true });
@@ -20,7 +28,10 @@ export const shoppingListMemberController = express.Router({ mergeParams: true }
 shoppingListMemberController.post(
     '/', paramValidator(shoppingListDetailParamSchema), bodyValidator(saveMembersBodySchema),
     async (req: IAppRequest<TShoppingListDetailParams,never,TSaveMembersBody>, res: Response) => {
-        successResponse(res, { params: req.parsedParams, body: req.body });
+        const { id: shoppingListId } = req.parsedParams!;
+        const updatedShoppingList = await addShoppingListMember(shoppingListId, req.body, req.user!);
+
+        successResponse(res, { members: await exportShoppingListMembers(updatedShoppingList, true) }, StatusCodes.CREATED);
     }
 );
 
@@ -30,7 +41,12 @@ shoppingListMemberController.post(
 shoppingListMemberController.patch(
     '/:memberId/permission', paramValidator(shoppingListMemberParamSchema), bodyValidator(saveMemberPermissionBodySchema),
     async (req: IAppRequest<TShoppingListMemberParams,never,TSaveMemberPermissionBody>, res: Response) => {
-        successResponse(res, { params: req.parsedParams, body: req.body });
+        const { id: shoppingListId, memberId } = req.parsedParams!;
+        const updatedShoppingList = await modifyListMembersPermission(
+            shoppingListId, memberId, req.body.permission, req.user!
+        );
+
+        successResponse(res, { members: await exportShoppingListMembers(updatedShoppingList, true) });
     }
 );
 
@@ -40,6 +56,9 @@ shoppingListMemberController.patch(
 shoppingListMemberController.delete(
     '/:memberId', paramValidator(shoppingListMemberParamSchema),
     async (req: IAppRequest<TShoppingListMemberParams>, res: Response) => {
-        successResponse(res, { params: req.parsedParams });
+        const { id: shoppingListId, memberId } = req.parsedParams!;
+        const updatedShoppingList = await removeShoppingListMember(shoppingListId, memberId, req.user!);
+
+        successResponse(res, { members: await exportShoppingListMembers(updatedShoppingList, true) });
     }
 );

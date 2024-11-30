@@ -58,11 +58,6 @@ export async function exportShoppingListOverview(doc: THydratedShoppingListDocum
     }
 }
 
-type TMemberExportData<TIncludeMemberPermission extends boolean|undefined = undefined> = TIncludeMemberPermission extends true
-    ? { user: TUserPublicData, permission: EShoppingListMemberPermission }
-    : { user: TUserPublicData }
-;
-
 export type TShoppingListDetail<TIncludeMemberPermission extends boolean|undefined = undefined> = TShoppingListOverview & {
     members: Array<TMemberExportData<TIncludeMemberPermission>>,
     items: TItemsExport
@@ -77,21 +72,10 @@ export async function exportShoppingListDetail<TIncludeMemberPermission extends 
     doc: THydratedShoppingListDocument, includeMemberPermissions?: TIncludeMemberPermission
 ): Promise<TShoppingListDetail<TIncludeMemberPermission>> {
     const overviewData = await exportShoppingListOverview(doc);
-    const members = await Promise.all((doc.members as Types.DocumentArray<IShoppingListMember>).map(async (member) => {
-        const populatedMember = await member.populate<{ user: THydratedUserDocument }>('user');
-        const memberData = { user: exportUserData(populatedMember.user) };
-
-        if (!includeMemberPermissions) return memberData;
-
-        return {
-            ...memberData,
-            permission: populatedMember.permission
-        };
-    }));
 
     return {
         ...overviewData,
-        members: members as TMemberExportData<TIncludeMemberPermission>[],
+        members: await exportShoppingListMembers(doc, includeMemberPermissions),
         items: await exportShoppingListItems(doc)
     }
 }
@@ -148,4 +132,37 @@ export async function exportShoppingListItems(doc: THydratedShoppingListDocument
             } : null
         }
     });
+}
+
+type TPopulatedMembersShoppingListDocument = Omit<THydratedShoppingListDocument, 'members'> & {
+    members: Types.DocumentArray<Omit<IShoppingListMember, 'user'> & {
+        user: THydratedUserDocument
+    }>
+}
+
+type TMemberExportData<TIncludeMemberPermission extends boolean|undefined = undefined> = TIncludeMemberPermission extends true
+    ? { user: TUserPublicData, permission: EShoppingListMemberPermission }
+    : { user: TUserPublicData }
+;
+
+/**
+ * Exports shopping list members array that may be used in responses.
+ * @param doc The shopping list document to export members from.
+ * @param includeMemberPermissions Whether member's permission property should be included in the export.
+ */
+export async function exportShoppingListMembers<TIncludeMemberPermission extends boolean|undefined = undefined>(
+    doc: THydratedShoppingListDocument, includeMemberPermissions?: TIncludeMemberPermission
+): Promise<Array<TMemberExportData<TIncludeMemberPermission>>> {
+    const populatedDoc = await doc.populate<TPopulatedMembersShoppingListDocument>('members.user');
+
+    return populatedDoc.members.map(member => {
+        const data = { user: exportUserData(member.user) };
+
+        if (!includeMemberPermissions) return data;
+
+        return {
+            ...data,
+            permission: member.permission
+        };
+    }) as Array<TMemberExportData<TIncludeMemberPermission>>;
 }
