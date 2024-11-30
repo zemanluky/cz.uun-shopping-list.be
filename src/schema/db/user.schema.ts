@@ -32,7 +32,7 @@ const userSchema = new Schema<IUser, TUserModel, IUserMethods>({
     profile_picture_path: { type: String, required: false, default: null },
     email: { type: String, required: true, index: true, unique: true },
     password: { type: String, required: true },
-    role: { type: String, required: false, index: true, unique: true, default: EUserRole.User },
+    role: { type: String, required: false, default: EUserRole.User },
     refresh_tokens: { type: [userRefreshTokenSchema], index: true, unique: true, default: [] },
 });
 userSchema.method('fullName', function fullName() {
