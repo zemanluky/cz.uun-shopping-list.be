@@ -11,6 +11,7 @@ import {NotFoundError} from "../error/response/not-found.error.ts";
 import {checkAccessToShoppingList, EShoppingListAccess} from "../utils/shopping-list.utils.ts";
 import {PermissionError} from "../error/response/permission.error.ts";
 import {validatePaginationParameters} from "../utils/pagination.utils.ts";
+import {BadRequestError} from "../error/response/bad-request.error.ts";
 
 type TShoppingListListResult = { shoppingLists: Array<THydratedShoppingListDocument>, paginatedParams: IPaginatedParameters };
 
@@ -75,6 +76,7 @@ export async function listShoppingLists(user: THydratedUserDocument, filter: TSh
 
     const queryResults = await baseQuery
         .collation({ locale: 'en', strength: 1 })
+        .sort({ created_at: 1, complete_by: 1 })
         .limit(validatedPageSize)
         .skip(skipDocuments)
         .exec();
@@ -173,7 +175,7 @@ export async function closeShoppingList(id: Types.ObjectId, user: THydratedUserD
             },
             closed_at: new Date()
         }
-    });
+    }, { new: true });
 
     return result!;
 }
