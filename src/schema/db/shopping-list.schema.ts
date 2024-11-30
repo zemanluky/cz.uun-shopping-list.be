@@ -15,7 +15,10 @@ export interface IShoppingList {
     closed_at: Date|null;
 }
 
-export type THydratedShoppingListDocument = HydratedDocument<IShoppingList & { items?: Types.DocumentArray<IShoppingListItem> }>;
+export type THydratedShoppingListDocument = HydratedDocument<IShoppingList & {
+    items?: Types.DocumentArray<IShoppingListItem>,
+    members?: Types.DocumentArray<IShoppingListMember>
+}>;
 type TShoppingListModel = Model<IShoppingList,{},{},{},THydratedShoppingListDocument>
 
 const shoppingListSchema = new Schema<IShoppingList, TShoppingListModel>({

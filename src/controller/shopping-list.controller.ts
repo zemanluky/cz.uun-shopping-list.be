@@ -8,7 +8,19 @@ import {
     shoppingListListQuerySchema, type TShoppingListBody, type TShoppingListDetailParams,
     type TShoppingListListQuery, type TUpdateShoppingListBody, updateShoppingListBodySchema
 } from "../schema/request/shopping-list.schema.ts";
-import {successResponse} from "../helper/response.helper.ts";
+import {emptyResponse, paginatedResponse, successResponse} from "../helper/response.helper.ts";
+import {
+    closeShoppingList,
+    createShoppingList, deleteShoppingList,
+    getShoppingListDetail,
+    listShoppingLists,
+    updateShoppingList
+} from "../service/shopping-list.service.ts";
+import {
+    checkAccessToShoppingList,
+    EShoppingListAccess,
+    exportShoppingListDetail, exportShoppingListItemStatistics, exportShoppingListOverview
+} from "../utils/shopping-list.utils.ts";
 
 export const shoppingListController = express.Router();
 
@@ -19,7 +31,15 @@ export const shoppingListController = express.Router();
 shoppingListController.get(
     '/', queryValidator(shoppingListListQuerySchema),
     async (req: IAppRequest<never,TShoppingListListQuery>, res: Response) => {
-        successResponse(res, { query: req.parsedQuery });
+        const { shoppingLists, paginatedParams } = await listShoppingLists(req.user!, req.parsedQuery!);
+
+        // make the data publicly usable
+        const exportedShoppingLists = await Promise.all(shoppingLists.map(async list => ({
+            ...(await exportShoppingListOverview(list)),
+            ...exportShoppingListItemStatistics(list),
+        })));
+
+        paginatedResponse(res, exportedShoppingLists, paginatedParams);
     }
 );
 
@@ -29,7 +49,16 @@ shoppingListController.get(
 shoppingListController.get(
     '/:id', paramValidator(shoppingListDetailParamSchema),
     async (req: IAppRequest<TShoppingListDetailParams>, res: Response) => {
-        successResponse(res, { params: req.parsedParams });
+        const objectId = req.parsedParams!.id;
+        const shoppingList = await getShoppingListDetail(objectId, req.user!);
+        const permission = checkAccessToShoppingList(shoppingList, req.user!);
+
+        const data = {
+            ...(await exportShoppingListDetail(shoppingList, permission === EShoppingListAccess.ReadWrite)),
+            ...exportShoppingListItemStatistics(shoppingList),
+        }
+
+        successResponse(res, data);
     }
 );
 
@@ -39,7 +68,14 @@ shoppingListController.get(
 shoppingListController.post(
     '/', bodyValidator(shoppingListBodySchema),
     async (req: IAppRequest<never,never,TShoppingListBody>, res: Response) => {
-        successResponse(res, { body: req.body });
+        const shoppingList = await createShoppingList(req.body, req.user!);
+
+        const data = {
+            ...(await exportShoppingListDetail(shoppingList, true)),
+            ...exportShoppingListItemStatistics(shoppingList),
+        }
+
+        successResponse(res, data);
     }
 );
 
@@ -49,7 +85,15 @@ shoppingListController.post(
 shoppingListController.put(
     '/:id', paramValidator(shoppingListDetailParamSchema), bodyValidator(updateShoppingListBodySchema),
     async (req: IAppRequest<TShoppingListDetailParams,never,TUpdateShoppingListBody>, res: Response) => {
-        successResponse(res, { params: req.parsedParams, body: req.body });
+        const objectId = req.parsedParams!.id;
+        const shoppingList = await updateShoppingList(objectId, req.body, req.user!);
+
+        const data = {
+            ...(await exportShoppingListDetail(shoppingList, true)),
+            ...exportShoppingListItemStatistics(shoppingList),
+        }
+
+        successResponse(res, data);
     }
 );
 
@@ -59,7 +103,10 @@ shoppingListController.put(
 shoppingListController.delete(
     '/:id', paramValidator(shoppingListDetailParamSchema),
     async (req: IAppRequest<TShoppingListDetailParams>, res: Response) => {
-        successResponse(res, { params: req.parsedParams });
+        const objectId = req.parsedParams!.id;
+        await deleteShoppingList(objectId, req.user!);
+
+        emptyResponse(res);
     }
 );
 
@@ -69,6 +116,14 @@ shoppingListController.delete(
 shoppingListController.patch(
     '/:id/completed-status', paramValidator(shoppingListDetailParamSchema),
     async (req: IAppRequest<TShoppingListDetailParams>, res: Response) => {
-        successResponse(res, { params: req.parsedParams });
+        const objectId = req.parsedParams!.id;
+        const shoppingList = await closeShoppingList(objectId, req.user!);
+
+        const data = {
+            ...(await exportShoppingListDetail(shoppingList, true)),
+            ...exportShoppingListItemStatistics(shoppingList),
+        }
+
+        successResponse(res, data);
     }
 );

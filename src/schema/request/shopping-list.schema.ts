@@ -1,13 +1,14 @@
 import {paginatedQuerySchema} from "./paginated.schema.ts";
 import {z} from "zod";
 import {startOfDay} from "date-fns";
-import {coerceBoolean} from "../../utils/validations.utils.ts";
+import {coerceBoolean, zodObjectId} from "../../utils/validations.utils.ts";
+import {Types} from "mongoose";
 
 export const shoppingListFilterQuerySchema = z.object({
     // searches for shopping lists by name
     search: z.string().trim().optional(),
     // searches for shopping lists of a given author
-    author: z.string().trim().optional(),
+    author: z.string().trim().pipe(zodObjectId).transform(val => new Types.ObjectId(val)).optional(),
     // searches for shopping lists that the user either owns, has access to or both
     includeOnly: z.string().toLowerCase().trim().pipe(z.enum(['own', 'shared', 'all'])).default('all'),
     // searches for shopping lists before a given completion date
@@ -21,7 +22,7 @@ export const shoppingListListQuerySchema = paginatedQuerySchema().merge(shopping
 export type TShoppingListListQuery = z.infer<typeof shoppingListListQuerySchema>;
 
 // detail parameter schema
-export const shoppingListDetailParamSchema = z.object({ id: z.string().trim() });
+export const shoppingListDetailParamSchema = z.object({ id: z.string().trim().pipe(zodObjectId).transform(val => new Types.ObjectId(val)) });
 export type TShoppingListDetailParams = z.infer<typeof shoppingListDetailParamSchema>;
 
 const completeBySchema = z.coerce.date().min(startOfDay(new Date()));

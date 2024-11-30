@@ -5,7 +5,7 @@ import {login, logout, refresh} from "../service/auth.service.ts";
 import {emptyResponse, successResponse} from "../helper/response.helper.ts";
 import {UnauthenticatedError} from "../error/response/unauthenticated.error.ts";
 import {authenticateRequest} from "../helper/request.guard.ts";
-import {publicUserData} from "../utils/user.util.ts";
+import {exportUserData} from "../utils/user.util.ts";
 import type {IAppRequest} from "../../types";
 
 // Name of the refresh token cookie.
@@ -68,6 +68,6 @@ authController.get(
     '/identity',
     authenticateRequest(),
     (req: IAppRequest, res: Response) => {
-        successResponse(res, publicUserData(req.user!));
+        successResponse(res, exportUserData(req.user!));
     }
 );

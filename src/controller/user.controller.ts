@@ -10,7 +10,7 @@ import {
     checkIdentifierAvailability, createUser, getUserDetailById, getUserDetailByUsername, getUserList, updateUser
 } from "../service/user.service.ts";
 import {emptyResponse, paginatedResponse, successResponse} from "../helper/response.helper.ts";
-import {publicUserData} from "../utils/user.util.ts";
+import {exportUserData} from "../utils/user.util.ts";
 import type {IAppRequest} from "../../types";
 
 export const userController = express.Router();
@@ -23,7 +23,7 @@ userController.get(
     '/', authenticateRequest(), queryValidator(userListQuerySchema),
     async (req: IAppRequest<never,TUserListQuery>, res: Response) => {
         const { users, paginatedParams } = await getUserList(req.parsedQuery);
-        const publicUsers = users.map(u => publicUserData(u));
+        const publicUsers = users.map(u => exportUserData(u));
 
         paginatedResponse(res, publicUsers, paginatedParams);
     }
@@ -39,11 +39,11 @@ userController.get(
         // we want to get user by their username
         if (req.parsedQuery!.filter_type === 'username') {
             const user = await getUserDetailByUsername(req.parsedParams!.id);
-            return successResponse(res, publicUserData(user));
+            return successResponse(res, exportUserData(user));
         }
 
         const user = await getUserDetailById(req.parsedParams!.id);
-        successResponse(res, publicUserData(user));
+        successResponse(res, exportUserData(user));
     }
 )
 
@@ -81,6 +81,6 @@ userController.put(
     async (req: IAppRequest<never,never,TUpdateUserData>, res: Response) => {
         // update user own data (use authenticated user's id) and return their updated data
         const updatedUser = await updateUser(req.body, req.user!._id.toString());
-        successResponse(res, publicUserData(updatedUser));
+        successResponse(res, exportUserData(updatedUser));
     }
 );
