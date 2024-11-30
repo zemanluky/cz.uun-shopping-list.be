@@ -1,10 +1,11 @@
 import {shoppingListDetailParamSchema} from "./shopping-list.schema.ts";
 import {z} from "zod";
-import {coerceBoolean} from "../../utils/validations.utils.ts";
+import {zodObjectId} from "../../utils/validations.utils.ts";
+import {Types} from "mongoose";
 
 // schema for parameters when editing or deleting list item
 export const shoppingListItemParamSchema = shoppingListDetailParamSchema.extend({
-    itemId: z.string().trim().min(1)
+    itemId: z.string().trim().pipe(zodObjectId).transform(val => new Types.ObjectId(val))
 });
 export type TShoppingListItemParams = z.infer<typeof shoppingListItemParamSchema>;
 

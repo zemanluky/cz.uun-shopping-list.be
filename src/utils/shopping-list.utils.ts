@@ -65,7 +65,7 @@ type TMemberExportData<TIncludeMemberPermission extends boolean|undefined = unde
 
 export type TShoppingListDetail<TIncludeMemberPermission extends boolean|undefined = undefined> = TShoppingListOverview & {
     members: Array<TMemberExportData<TIncludeMemberPermission>>,
-    items: Array<IShoppingListItem>
+    items: TItemsExport
 }
 
 /**
@@ -92,7 +92,7 @@ export async function exportShoppingListDetail<TIncludeMemberPermission extends 
     return {
         ...overviewData,
         members: members as TMemberExportData<TIncludeMemberPermission>[],
-        items: (doc.items as Types.DocumentArray<IShoppingListItem>).map(item => item.toObject())
+        items: await exportShoppingListItems(doc)
     }
 }
 
@@ -112,4 +112,40 @@ export function exportShoppingListItemStatistics(doc: THydratedShoppingListDocum
             completed_items: doc.items.filter(item => item.completed !== null).length
         }
     };
+}
+
+type TPopulatedItemsShoppingListDocument = Omit<THydratedShoppingListDocument, 'items'> & {
+    items: Types.DocumentArray<Omit<IShoppingListItem, 'completed'> & {
+        completed: {
+            completed_at: Date,
+            completed_by: THydratedUserDocument
+        } | null
+    }>
+}
+
+type TItemsExport = Array<Omit<IShoppingListItem, 'completed'> & {
+    completed: {
+        completed_at: Date,
+        completed_by: TUserPublicData
+    } | null
+}>;
+
+/**
+ * Exports shopping list items to be used in responses.
+ * @param doc
+ */
+export async function exportShoppingListItems(doc: THydratedShoppingListDocument): Promise<TItemsExport> {
+    const populatedDoc = await doc.populate<TPopulatedItemsShoppingListDocument>('items.completed.completed_by');
+
+    return populatedDoc.items.map(item => {
+        const data = item.toObject();
+
+        return {
+            ...data,
+            completed: data.completed !== null ? {
+                ...data.completed,
+                completed_by: exportUserData(item.completed?.completed_by!)
+            } : null
+        }
+    });
 }

@@ -22,7 +22,9 @@ export const shoppingListListQuerySchema = paginatedQuerySchema().merge(shopping
 export type TShoppingListListQuery = z.infer<typeof shoppingListListQuerySchema>;
 
 // detail parameter schema
-export const shoppingListDetailParamSchema = z.object({ id: z.string().trim().pipe(zodObjectId).transform(val => new Types.ObjectId(val)) });
+export const shoppingListDetailParamSchema = z.object({
+    id: z.string().trim().pipe(zodObjectId).transform(val => new Types.ObjectId(val))
+});
 export type TShoppingListDetailParams = z.infer<typeof shoppingListDetailParamSchema>;
 
 const completeBySchema = z.coerce.date().min(startOfDay(new Date()));
