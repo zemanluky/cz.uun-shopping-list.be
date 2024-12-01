@@ -1,0 +1,1450 @@
+{
+	"info": {
+		"_postman_id": "e6ab6a98-92be-4a8e-95be-d9c4553b04e5",
+		"name": "API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19786650"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"login\": \"zemanluky@gmail.com\",\r\n    \"password\": \"123456Ab+\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Identity",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/auth/identity",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"identity"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/auth/refresh",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"refresh"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/auth/logout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "List users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/user",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "luká",
+									"description": "Searches users by their name, surname or username.",
+									"disabled": true
+								},
+								{
+									"key": "searchByUsername",
+									"value": "zel_uk",
+									"description": "Searches only by the username and only from the beginning.",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Detail",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/user/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user",
+								":id"
+							],
+							"query": [
+								{
+									"key": "filter_type",
+									"value": "id",
+									"description": "Whether we are searching user by the ID or username. Allowed values are 'id' or 'username', and 'id' is set by default.",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "673289555ed4989365fa34a2",
+									"description": "ID or username of the user we want to retrieve."
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Registration - availability",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/user/registration/availability?email=zemanluky@gmail.com&username=zel_uk",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user",
+								"registration",
+								"availability"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "zemanluky@gmail.com",
+									"description": "Checks for availability of the given email."
+								},
+								{
+									"key": "username",
+									"value": "zel_uk",
+									"description": "Checks for availability of the given username."
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Registration",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Adam\",\r\n    \"surname\": \"Lékař\",\r\n    \"username\": \"adamecek\",\r\n    \"email\": \"adam@gmail.com\",\r\n    \"password\": \"123456Ab+\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/user/registration",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user",
+								"registration"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Profile",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Lukáš\",\r\n    \"surname\": \"Zeman\",\r\n    \"username\": \"zel_uk\",\r\n    \"email\": \"zemanluky@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/user/profile",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "ShoppingList",
+			"item": [
+				{
+					"name": "Member",
+					"item": [
+						{
+							"name": "Add members",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"members\": [\r\n        {\r\n            \"user\": \"674b8ac88cd747b4410f2df1\",\r\n            \"permission\": \"read\"\r\n        }\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/shopping-list/:id/member",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"shopping-list",
+										":id",
+										"member"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "674b8b038cd747b4410f2e12"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Successfully added member",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"members\": [\r\n        {\r\n            \"user\": \"674b8ac88cd747b4410f2df1\",\r\n            \"permission\": \"read\"\r\n        }\r\n    ]\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/shopping-list/:id/member",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"shopping-list",
+												":id",
+												"member"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "674b8b038cd747b4410f2e12"
+												}
+											]
+										}
+									},
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"cb-2XCc1CymQVwAwlqJ3OKWbRcbqI8\""
+										},
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 30 Nov 2024 22:12:37 GMT"
+										},
+										{
+											"key": "Content-Length",
+											"value": "203"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": 201,\n    \"success\": true,\n    \"data\": {\n        \"members\": [\n            {\n                \"user\": {\n                    \"_id\": \"674b8ac88cd747b4410f2df1\",\n                    \"name\": \"Adam\",\n                    \"surname\": \"Lékař\",\n                    \"username\": \"adamecek\",\n                    \"email\": \"adam@gmail.com\",\n                    \"__v\": 0\n                },\n                \"permission\": \"read\"\n            }\n        ]\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Update member's permission",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"permission\": \"write\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/shopping-list/:id/member/:memberId/permission",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"shopping-list",
+										":id",
+										"member",
+										":memberId",
+										"permission"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "674b8b038cd747b4410f2e12"
+										},
+										{
+											"key": "memberId",
+											"value": "674b8ac88cd747b4410f2df1"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Successfully updated member's permission",
+									"originalRequest": {
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"permission\": \"write\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/shopping-list/:id/member/:memberId/permission",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"shopping-list",
+												":id",
+												"member",
+												":memberId",
+												"permission"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "674b8b038cd747b4410f2e12"
+												},
+												{
+													"key": "memberId",
+													"value": "674b8ac88cd747b4410f2df1"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"cc-oZORLkQs3ghJnNee4xS3Fw5x0S8\""
+										},
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 30 Nov 2024 22:13:41 GMT"
+										},
+										{
+											"key": "Content-Length",
+											"value": "204"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": 200,\n    \"success\": true,\n    \"data\": {\n        \"members\": [\n            {\n                \"user\": {\n                    \"_id\": \"674b8ac88cd747b4410f2df1\",\n                    \"name\": \"Adam\",\n                    \"surname\": \"Lékař\",\n                    \"username\": \"adamecek\",\n                    \"email\": \"adam@gmail.com\",\n                    \"__v\": 0\n                },\n                \"permission\": \"write\"\n            }\n        ]\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Remove member",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/shopping-list/:id/member/:memberId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"shopping-list",
+										":id",
+										"member",
+										":memberId"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "674b8b038cd747b4410f2e12"
+										},
+										{
+											"key": "memberId",
+											"value": "674b8ac88cd747b4410f2df1"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Successfully removed member",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/shopping-list/:id/member/:memberId",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"shopping-list",
+												":id",
+												"member",
+												":memberId"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "674b8b038cd747b4410f2e12"
+												},
+												{
+													"key": "memberId",
+													"value": "674b8ac88cd747b4410f2df1"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"33-VABEQFI1PYzJhNwOMSIezp5lH0U\""
+										},
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 30 Nov 2024 22:12:18 GMT"
+										},
+										{
+											"key": "Content-Length",
+											"value": "51"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": 200,\n    \"success\": true,\n    \"data\": {\n        \"members\": []\n    }\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Item",
+					"item": [
+						{
+							"name": "Add item",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"quantity\": \"2 packs\",\r\n    \"name\": \"Lay's chips\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/shopping-list/:id/item",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"shopping-list",
+										":id",
+										"item"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "674b583e59c3c75f8e15b75e"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Added item sucessfully",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"quantity\": \"2 packs\",\r\n    \"name\": \"Cheese nachos\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/shopping-list/:id/item",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"shopping-list",
+												":id",
+												"item"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "674b583e59c3c75f8e15b75e"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"ed-A+FFFjH/2fNLwXS0o6R9ya3ToQ4\""
+										},
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 30 Nov 2024 20:58:39 GMT"
+										},
+										{
+											"key": "Content-Length",
+											"value": "237"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": 200,\n    \"success\": true,\n    \"data\": {\n        \"items\": [\n            {\n                \"quantity\": \"1 pack\",\n                \"name\": \"Lay's chips\",\n                \"completed\": null,\n                \"_id\": \"674b7c595e281dd680460ac4\"\n            },\n            {\n                \"quantity\": \"2 packs\",\n                \"name\": \"Cheese nachos\",\n                \"completed\": null,\n                \"_id\": \"674b7c7f5e281dd680460ae2\"\n            }\n        ]\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Update item",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"quantity\": \"2 packs\",\r\n    \"name\": \"Lay's chips\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/shopping-list/:id/item/:itemId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"shopping-list",
+										":id",
+										"item",
+										":itemId"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "674b583e59c3c75f8e15b75e"
+										},
+										{
+											"key": "itemId",
+											"value": "674b7c595e281dd680460ac4"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Successfully updated",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"quantity\": \"2 packs\",\r\n    \"name\": \"Lay's chips\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/shopping-list/:id/item/:itemId",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"shopping-list",
+												":id",
+												"item",
+												":itemId"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "674b583e59c3c75f8e15b75e"
+												},
+												{
+													"key": "itemId",
+													"value": "674b7c595e281dd680460ac4"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"ee-cWzD/328CEjOgbN35HieQmmJdpw\""
+										},
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 30 Nov 2024 21:01:17 GMT"
+										},
+										{
+											"key": "Content-Length",
+											"value": "238"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": 200,\n    \"success\": true,\n    \"data\": {\n        \"items\": [\n            {\n                \"quantity\": \"2 packs\",\n                \"name\": \"Lay's chips\",\n                \"completed\": null,\n                \"_id\": \"674b7c595e281dd680460ac4\"\n            },\n            {\n                \"quantity\": \"2 packs\",\n                \"name\": \"Cheese nachos\",\n                \"completed\": null,\n                \"_id\": \"674b7c7f5e281dd680460ae2\"\n            }\n        ]\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Delete item",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/shopping-list/:id/item/:itemId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"shopping-list",
+										":id",
+										"item",
+										":itemId"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "674b583e59c3c75f8e15b75e"
+										},
+										{
+											"key": "itemId",
+											"value": "674b7c595e281dd680460ac4"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Successfully deleted",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/shopping-list/:id/item/:itemId",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"shopping-list",
+												":id",
+												"item",
+												":itemId"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "674b583e59c3c75f8e15b75e"
+												},
+												{
+													"key": "itemId",
+													"value": "674b7c595e281dd680460ac4"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"90-UMVGPrUVBQn6zm5eozzy1Qfs+jo\""
+										},
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 30 Nov 2024 21:02:25 GMT"
+										},
+										{
+											"key": "Content-Length",
+											"value": "144"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": 200,\n    \"success\": true,\n    \"data\": {\n        \"items\": [\n            {\n                \"quantity\": \"2 packs\",\n                \"name\": \"Cheese nachos\",\n                \"completed\": null,\n                \"_id\": \"674b7c7f5e281dd680460ae2\"\n            }\n        ]\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Toggle item completed status",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"bought\": true\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/shopping-list/:id/item/:itemId/completed-status",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"shopping-list",
+										":id",
+										"item",
+										":itemId",
+										"completed-status"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "674b583e59c3c75f8e15b75e"
+										},
+										{
+											"key": "itemId",
+											"value": "674b7dae5088978f5bb84c66"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Successfully completed item",
+									"originalRequest": {
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"bought\": true\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/shopping-list/:id/item/:itemId/completed-status",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"shopping-list",
+												":id",
+												"item",
+												":itemId",
+												"completed-status"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "674b583e59c3c75f8e15b75e"
+												},
+												{
+													"key": "itemId",
+													"value": "674b7dae5088978f5bb84c66"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"1c5-suNEF99NKI7liHiYuCDS2n5I/aM\""
+										},
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 30 Nov 2024 21:23:43 GMT"
+										},
+										{
+											"key": "Content-Length",
+											"value": "453"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": 200,\n    \"success\": true,\n    \"data\": {\n        \"items\": [\n            {\n                \"quantity\": \"2 packs\",\n                \"name\": \"Cheese nachos\",\n                \"completed\": null,\n                \"_id\": \"674b7c7f5e281dd680460ae2\"\n            },\n            {\n                \"quantity\": \"2 packs\",\n                \"name\": \"Lay's chips\",\n                \"completed\": {\n                    \"completed_by\": {\n                        \"_id\": \"673289555ed4989365fa34a2\",\n                        \"name\": \"Lukáš\",\n                        \"surname\": \"Zeman\",\n                        \"username\": \"zel_uk\",\n                        \"email\": \"zemanluky@gmail.com\",\n                        \"__v\": 5\n                    },\n                    \"completed_at\": \"2024-11-30T21:23:38.602Z\",\n                    \"_id\": \"674b825a16914f2e1daf3748\"\n                },\n                \"_id\": \"674b7dae5088978f5bb84c66\"\n            }\n        ]\n    }\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "List & filter shopping lists",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/shopping-list?page=1&pageSize=50",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"shopping-list"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "50"
+								},
+								{
+									"key": "includeOnly",
+									"value": "all",
+									"disabled": true
+								},
+								{
+									"key": "includeCompleted",
+									"value": "true",
+									"disabled": true
+								},
+								{
+									"key": "completeBy",
+									"value": "2024-12-24T00:00:00",
+									"disabled": true
+								},
+								{
+									"key": "author",
+									"value": "673289555ed4989365fa34a2",
+									"disabled": true
+								},
+								{
+									"key": "search",
+									"value": "upda",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Detail of shopping list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/shopping-list/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"shopping-list",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "674b8b038cd747b4410f2e12"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Found detail",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/shopping-list/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"shopping-list",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "674b583e59c3c75f8e15b75e"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1d6-yXRLjpEfTlCe+q7W1MlaQm+UC7U\""
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 30 Nov 2024 18:41:40 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "470"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 200,\n    \"success\": true,\n    \"data\": {\n        \"_id\": \"674b583e59c3c75f8e15b75e\",\n        \"name\": \"Test shopping list\",\n        \"complete_by\": \"2024-12-24T17:00:00.000Z\",\n        \"closed_at\": null,\n        \"created_at\": \"2024-11-30T18:23:58.009Z\",\n        \"updated_at\": \"2024-11-30T18:23:58.009Z\",\n        \"__v\": 0,\n        \"author\": {\n            \"_id\": \"673289555ed4989365fa34a2\",\n            \"name\": \"Lukáš\",\n            \"surname\": \"Zeman\",\n            \"username\": \"zel_uk\",\n            \"email\": \"zemanluky@gmail.com\",\n            \"__v\": 5\n        },\n        \"has_photo\": false,\n        \"members\": [],\n        \"items\": [],\n        \"stats\": {\n            \"total_items\": 0,\n            \"completed_items\": 0\n        }\n    }\n}"
+						},
+						{
+							"name": "Not found",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/shopping-list/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"shopping-list",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "674b583e59c3c75f8e15b75f"
+										}
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1f4-dqIxn5yiaxASpzFlfqLOrfWI7Y4\""
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 30 Nov 2024 18:41:55 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "500"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 404,\n    \"success\": false,\n    \"error\": {\n        \"message\": \"Could not find shopping list with id '674b583e59c3c75f8e15b75f'.\",\n        \"code\": \"not_found.shopping_list\",\n        \"trace\": \"Error: Could not find shopping list with id '674b583e59c3c75f8e15b75f'.\\n    at new BaseAppError (/app/src/error/response/base-app.error.ts:12:9)\\n    at new NotFoundError (/app/src/error/response/not-found.error.ts:8:9)\\n    at <anonymous> (/app/src/service/shopping-list.service.ts:104:34)\\n    at processTicksAndRejections (native:7:39)\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Create new shopping list",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Test shopping list\",\r\n    \"complete_by\": \"2024-12-24T18:00:00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/shopping-list",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"shopping-list"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Successfully created",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Test shopping list\",\r\n    \"complete_by\": \"2024-12-24T18:00:00\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/shopping-list",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"shopping-list"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1d6-YnI+LBYw6RoLpAO48y66PaoMB5w\""
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 30 Nov 2024 18:23:57 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "470"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 200,\n    \"success\": true,\n    \"data\": {\n        \"name\": \"Test shopping list\",\n        \"complete_by\": \"2024-12-24T17:00:00.000Z\",\n        \"closed_at\": null,\n        \"_id\": \"674b583e59c3c75f8e15b75e\",\n        \"created_at\": \"2024-11-30T18:23:58.009Z\",\n        \"updated_at\": \"2024-11-30T18:23:58.009Z\",\n        \"__v\": 0,\n        \"author\": {\n            \"_id\": \"673289555ed4989365fa34a2\",\n            \"name\": \"Lukáš\",\n            \"surname\": \"Zeman\",\n            \"username\": \"zel_uk\",\n            \"email\": \"zemanluky@gmail.com\",\n            \"__v\": 5\n        },\n        \"has_photo\": false,\n        \"members\": [],\n        \"items\": [],\n        \"stats\": {\n            \"total_items\": 0,\n            \"completed_items\": 0\n        }\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Update shopping list",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Updated shopping list\",\r\n    \"complete_by\": \"2024-12-25T18:00:00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/shopping-list/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"shopping-list",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "674b566108a7a3a4be79b545"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Successfully updated",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Updated shopping list\",\r\n    \"complete_by\": \"2024-12-25T18:00:00\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/shopping-list/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"shopping-list",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "674b566108a7a3a4be79b545"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1d9-NdcdTqM0LJoUVm3oDjJwsi3uZvs\""
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 30 Nov 2024 18:20:04 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "473"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 200,\n    \"success\": true,\n    \"data\": {\n        \"_id\": \"674b566108a7a3a4be79b545\",\n        \"name\": \"Updated shopping list\",\n        \"complete_by\": \"2024-12-25T17:00:00.000Z\",\n        \"closed_at\": null,\n        \"created_at\": \"2024-11-30T18:16:01.871Z\",\n        \"updated_at\": \"2024-11-30T18:20:05.256Z\",\n        \"__v\": 0,\n        \"author\": {\n            \"_id\": \"673289555ed4989365fa34a2\",\n            \"name\": \"Lukáš\",\n            \"surname\": \"Zeman\",\n            \"username\": \"zel_uk\",\n            \"email\": \"zemanluky@gmail.com\",\n            \"__v\": 5\n        },\n        \"has_photo\": false,\n        \"members\": [],\n        \"items\": [],\n        \"stats\": {\n            \"total_items\": 0,\n            \"completed_items\": 0\n        }\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete shopping list",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/shopping-list/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"shopping-list",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "674b566108a7a3a4be79b545"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Deleted successfully",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/shopping-list/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"shopping-list",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "674b566108a7a3a4be79b545"
+										}
+									]
+								}
+							},
+							"status": "No Content",
+							"code": 204,
+							"_postman_previewlanguage": "plain",
+							"header": [
+								{
+									"key": "ETag",
+									"value": "W/\"a-bAsFyilMr4Ra1hIU5PyoyFRunpI\""
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 30 Nov 2024 18:23:38 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "0"
+								}
+							],
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "Mark shopping list completed",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/shopping-list/:id/completed-status",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"shopping-list",
+								":id",
+								"completed-status"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "674b583e59c3c75f8e15b75e"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{accessToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
