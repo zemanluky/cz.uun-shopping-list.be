@@ -33,7 +33,7 @@ export async function listShoppingLists(user: THydratedUserDocument, filter: TSh
             baseQuery.where({ author: author });
         }
         else {
-            baseQuery.or([
+            baseQuery.and([
                 { author: author },
                 { 'members.user': user._id }
             ]);
