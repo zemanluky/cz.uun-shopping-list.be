@@ -84,7 +84,7 @@ export async function listShoppingLists(user: THydratedUserDocument, filter: TSh
     return {
         shoppingLists: queryResults,
         paginatedParams: {
-            total: await ShoppingList.collection.countDocuments(),
+            total: await ShoppingList.collection.countDocuments({ $or: [{ author: user._id }, { 'members.user': user._id }] }),
             filtered: queryResults.length,
             pageSize: validatedPageSize,
             maxPage: queryResults.length > 0
@@ -164,6 +164,9 @@ export async function closeShoppingList(id: Types.ObjectId, user: THydratedUserD
     if (!shoppingList)
         throw new NotFoundError(`Could not find the shopping list with id '${id}' to edit.`, 'shopping_list');
 
+    if (shoppingList.closed_at !== null)
+        throw new BadRequestError('Cannot close an already closed shopping list.', 'shopping_list:closing_closed_list');
+
     const access = checkAccessToShoppingList(shoppingList, user);
 
     if (access !== EShoppingListAccess.ReadWrite)
@@ -193,6 +196,9 @@ export async function deleteShoppingList(id: Types.ObjectId, user: THydratedUser
 
     if (!shoppingList)
         throw new NotFoundError(`Could not find the shopping list with id '${id}' to delete.`, 'shopping_list');
+
+    if (shoppingList.closed_at !== null)
+        throw new BadRequestError('Cannot delete a closed shopping list.', 'shopping_list:delete_closed_list');
 
     const access = checkAccessToShoppingList(shoppingList, user);
 
