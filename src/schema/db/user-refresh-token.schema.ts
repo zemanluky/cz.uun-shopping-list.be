@@ -14,7 +14,7 @@ export interface IUserRefreshToken {
 type TUserRefreshTokenModel = Model<IUserRefreshToken>;
 
 export const userRefreshTokenSchema = new Schema<IUserRefreshToken, TUserRefreshTokenModel>({
-    jti: { type: String, required: true, index: true, unique: true },
+    jti: { type: String, required: true },
     issued_at: { type: Date, required: true },
     valid_until: { type: Date, required: true },
     revoked_at: { type: Date, default: null }

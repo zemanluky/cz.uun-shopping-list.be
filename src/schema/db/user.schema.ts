@@ -34,11 +34,14 @@ const userSchema = new Schema<IUser, TUserModel, IUserMethods>({
     email: { type: String, required: true, index: true, unique: true },
     password: { type: String, required: true },
     role: { type: String, required: false, default: EUserRole.User },
-    refresh_tokens: { type: [userRefreshTokenSchema], index: true, unique: true, default: [] },
+    refresh_tokens: { type: [userRefreshTokenSchema], default: [] },
 });
 userSchema.method('fullName', function fullName() {
     return `${this.name} ${this.surname}`;
 });
+
+userSchema.index({ "refresh_tokens.jti": 1 }, { unique: true, sparse: true });
+userSchema.index({ "refresh_tokens.issued_at": 1 }, { sparse: true });
 
 export const User = model<IUser, TUserModel>('User', userSchema);
 export type TUser = InferRawDocType<typeof userSchema>;
