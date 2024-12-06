@@ -19,8 +19,6 @@ export enum EShoppingListAccess {
  * @param user The user to check access for.
  */
 export function checkAccessToShoppingList(shoppingList: THydratedShoppingListDocument, user: THydratedUserDocument): EShoppingListAccess {
-    console.log(user._id, shoppingList.author);
-
     if (user.role === EUserRole.Admin || user._id.equals(shoppingList.author))
         return EShoppingListAccess.ReadWrite;
 
