@@ -8,12 +8,12 @@ type TBaseResponse = {
     success: boolean
 };
 
-type TSuccessResponse<TData> = TBaseResponse & {
+export type TSuccessResponse<TData> = TBaseResponse & {
     success: true
     data: TData
 };
 
-type TErrorResponse = TBaseResponse & {
+export type TErrorResponse = TBaseResponse & {
     success: false,
     error: {
         message: string,
@@ -22,11 +22,11 @@ type TErrorResponse = TBaseResponse & {
     }
 };
 
-type TValidationResponse = TErrorResponse & {
+export type TValidationResponse = TErrorResponse & {
     validation: ZodIssue[]
 }
 
-type TPaginatedResponse<TData> = TBaseResponse & {
+export type TPaginatedResponse<TData> = TBaseResponse & {
     success: true,
     data: IPaginatedParameters & {
         items: Array<TData>

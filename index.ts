@@ -11,7 +11,7 @@ import {authenticateRequest} from "./src/helper/request.guard.ts";
 import {shoppingListMemberController} from "./src/controller/shopping-list-member.controller.ts";
 
 // initialize connection to MongoDB
-await connectToMongo();
+if (Bun.env.NODE_ENV !== 'test') await connectToMongo();
 
 // initialize app server
 const app = express();
@@ -35,3 +35,5 @@ app.use((req, res, next) => {
 app.use(errorHandler);
 
 app.listen(port, () => console.log(`🥳 UUN shopping list API is now running on port ${port}!`));
+
+export default app;
