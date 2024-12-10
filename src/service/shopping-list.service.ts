@@ -173,17 +173,18 @@ export async function closeShoppingList(id: Types.ObjectId, user: THydratedUserD
         throw new PermissionError('You do not have access to edit this resource.', 'shopping_list:write');
 
     // mark all incomplete items as complete now and set the close_at attribute
-    const result = await ShoppingList.findOneAndUpdate({ _id: id, 'items.completed': null }, {
-        $set: {
-            "items.$[].completed": {
+    shoppingList.closed_at = new Date();
+    shoppingList.items.forEach(item => {
+        if (item.completed === null) {
+            item.completed = {
                 completed_at: new Date(),
                 completed_by: user._id
-            },
-            closed_at: new Date()
+            };
         }
-    }, { new: true });
+    });
 
-    return result!;
+    shoppingList.markModified("items");
+    return await shoppingList.save();
 }
 
 /**
