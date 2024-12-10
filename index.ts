@@ -1,3 +1,4 @@
+import cors from "cors";
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import {errorHandler} from "./src/helper/error.handler.ts";
@@ -18,6 +19,7 @@ const app = express();
 const port = process.env.APP_PORT || 8000;
 
 // parse json body and req cookies
+app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 
