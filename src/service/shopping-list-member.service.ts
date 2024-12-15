@@ -108,11 +108,14 @@ export async function removeShoppingListMember(
 
     const access = checkAccessToShoppingList(shoppingList, user);
 
-    if (access !== EShoppingListAccess.ReadWrite)
+    if ([EShoppingListAccess.Read, EShoppingListAccess.ReadAddItems].includes(access)
+        || (access !== EShoppingListAccess.ReadWrite && !shoppingList.author.equals(user._id))
+    ) {
         throw new PermissionError(
             'You are not authorized to remove members\' from this shopping list.',
             'shopping_list.member:remove'
         );
+    }
 
     if (shoppingList.closed_at !== null)
         throw new BadRequestError('Cannot remove members from a closed shopping list.', 'shopping_list.member:closed_list');

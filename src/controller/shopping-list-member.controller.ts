@@ -10,7 +10,7 @@ import {
     type TSaveMembersBody,
     type TShoppingListMemberParams
 } from "../schema/request/shopping-list-member.schema.ts";
-import {successResponse} from "../helper/response.helper.ts";
+import {emptyResponse, successResponse} from "../helper/response.helper.ts";
 import {exportShoppingListMembers} from "../utils/shopping-list.utils.ts";
 import {StatusCodes} from "http-status-codes";
 import {
@@ -62,3 +62,16 @@ shoppingListMemberController.delete(
         successResponse(res, { members: await exportShoppingListMembers(updatedShoppingList, true) });
     }
 );
+
+/**
+ * Enables the user to remove themselves from a given shopping list.
+ */
+shoppingListMemberController.delete(
+    '/', paramValidator(shoppingListDetailParamSchema),
+    async (req: IAppRequest<TShoppingListMemberParams>, res: Response) => {
+        const { id: shoppingListId } = req.parsedParams!;
+        await removeShoppingListMember(shoppingListId, req.user!._id, req.user!);
+
+        emptyResponse(res);
+    }
+)
