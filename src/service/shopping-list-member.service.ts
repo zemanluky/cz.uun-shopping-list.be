@@ -36,7 +36,7 @@ export async function addShoppingListMember(
     if (shoppingList.closed_at !== null)
         throw new BadRequestError('Cannot add members to a closed shopping list.', 'shopping_list.member:closed_list');
 
-    const memberIdsToAdd = shoppingList.members.map(member => member.user.toString());
+    const memberIdsToAdd = data.members.map(member => member.user.toString());
 
     if (shoppingList.members.some(existingMember => memberIdsToAdd.includes(existingMember.user.toString())))
         throw new BadRequestError('Cannot add the same member multiple times.', 'shopping_list.member:duplicate');
@@ -108,8 +108,8 @@ export async function removeShoppingListMember(
 
     const access = checkAccessToShoppingList(shoppingList, user);
 
-    if ([EShoppingListAccess.Read, EShoppingListAccess.ReadAddItems].includes(access)
-        || (access !== EShoppingListAccess.ReadWrite && !shoppingList.author.equals(user._id))
+    if ([EShoppingListAccess.Read, EShoppingListAccess.ReadAddItems].includes(access) && !memberId.equals(user._id)
+        || (access === EShoppingListAccess.ReadWrite && shoppingList.author.equals(user._id))
     ) {
         throw new PermissionError(
             'You are not authorized to remove members\' from this shopping list.',
