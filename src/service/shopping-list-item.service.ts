@@ -142,8 +142,8 @@ export async function changeItemCompletionStatus(
         completed_at: new Date(),
         completed_by: user._id
     } : null;
-    shoppingList.items[itemIndex].save();
 
+    shoppingList.markModified('items');
     shoppingList.updated_at = new Date();
 
     return await shoppingList.save();

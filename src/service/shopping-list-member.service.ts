@@ -84,7 +84,7 @@ export async function modifyListMembersPermission(
         );
 
     shoppingList.members[memberIndex].permission = permission;
-    await shoppingList.members[memberIndex].save();
+    shoppingList.markModified('members');
 
     return await shoppingList.save();
 }
